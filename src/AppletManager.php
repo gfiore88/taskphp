@@ -28,15 +28,16 @@ class AppletManager {
             'memberapplet' => 'JSM2_MemberApplet',
         );
 
-        echo "\nGetting applet language XMLs..\n";
+        Logging::printLog(Logging::logType("Getting applet language XMLs..","INFO"));
 
         foreach ($applets as $appletDirectory => $appletLanguageId) {
-            echo " Getting > $appletLanguageId ($appletDirectory) language xmls..\n";
+
+            Logging::printLog(Logging::logType("Getting > $appletLanguageId ($appletDirectory) language xmls..","INFO"));
             $languages = self::getAppletLanguages($appletLanguageId);
             if (empty($languages)) {
                 throw new \Exception('There is no available languages for the ' . $appletLanguageId . ' applet.');
             } else {
-                echo ' - Available languages: ' . implode(', ', $languages) . "\n";
+                Logging::printLog(Logging::logType(" - Available languages: " . implode(", ", $languages),"INFO"));
             }
             $path = Config::get('system.paths.root') . '/cache/flash';
             foreach ($languages as $language) {
@@ -44,6 +45,7 @@ class AppletManager {
                 $xmlFile = $path . '/lang_' . $language . '.xml';
                 if (strlen($xmlContent) == file_put_contents($xmlFile, $xmlContent)) {
                     echo " OK saving $xmlFile was successful.\n";
+                    
                 } else {
                     throw new \Exception('Unable to save applet: (' . $appletLanguageId . ') language: (' . $language
                     . ') xml (' . $xmlFile . ')!');

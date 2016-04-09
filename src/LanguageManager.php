@@ -30,9 +30,9 @@ class LanguageManager {
         foreach (self::$applications as $application => $languages) {
             echo "[APPLICATION: " . $application . "]\n";
             foreach ($languages as $language) {
-                echo "\t[LANGUAGE: " . $language . "]";
+                Logging::printLog(Logging::logType("\t[LANGUAGE: " . $language . "]","INFO"));
                 if (self::getLanguageFile($application, $language)) {
-                    echo " OK\n";
+                    Logging::printLog(Logging::logType("OK", "SUCCESS"));
                 } else {
                     throw new \Exception('Unable to generate language file!');
                 }
