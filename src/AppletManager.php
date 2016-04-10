@@ -28,33 +28,33 @@ class AppletManager {
             'memberapplet' => 'JSM2_MemberApplet',
         );
 
-        Logging::printLog(Logging::logType("Getting applet language XMLs..","INFO"));
+        Logging::printLog(Logging::logType("Getting applet language XMLs..", "INFO"));
 
         foreach ($applets as $appletDirectory => $appletLanguageId) {
 
-            Logging::printLog(Logging::logType("Getting > $appletLanguageId ($appletDirectory) language xmls..","INFO"));
+            Logging::printLog(Logging::logType("Getting > $appletLanguageId ($appletDirectory) language xmls..", "INFO"));
             $languages = self::getAppletLanguages($appletLanguageId);
             if (empty($languages)) {
+                Logging::printLog(Logging::logType("No available languages! See Exception...", "WARNING"));
                 throw new \Exception('There is no available languages for the ' . $appletLanguageId . ' applet.');
             } else {
-                Logging::printLog(Logging::logType(" - Available languages: " . implode(", ", $languages),"INFO"));
+                Logging::printLog(Logging::logType(" - Available languages: " . implode(", ", $languages), "INFO"));
             }
             $path = Config::get('system.paths.root') . '/cache/flash';
             foreach ($languages as $language) {
                 $xmlContent = self::getAppletLanguageFile($appletLanguageId, $language);
                 $xmlFile = $path . '/lang_' . $language . '.xml';
                 if (strlen($xmlContent) == file_put_contents($xmlFile, $xmlContent)) {
-                    echo " OK saving $xmlFile was successful.\n";
-                    
+                    Logging::printLog(Logging::logType(" OK saving $xmlFile was successful.", "SUCCESS"));
                 } else {
+                    Logging::printLog(Logging::logType("Error saving applet. See Exception...", "ERROR"));
                     throw new \Exception('Unable to save applet: (' . $appletLanguageId . ') language: (' . $language
                     . ') xml (' . $xmlFile . ')!');
                 }
             }
-            echo " < $appletLanguageId ($appletDirectory) language xml cached.\n";
+            Logging::printLog(Logging::logType(" < $appletLanguageId ($appletDirectory) language xml cached.", "SUCCESS"));
         }
-
-        echo "\nApplet language XMLs generated.\n";
+        Logging::printLog(Logging::logType("Applet language XMLs generated", "SUCCESS"));
     }
 
     /**
@@ -75,6 +75,7 @@ class AppletManager {
         try {
             ApiErrors::checkForApiErrorResult($result);
         } catch (\Exception $e) {
+            Logging::printLog(Logging::logType("Error generating language for applet. See Exception...", "ERROR"));
             throw new \Exception('Getting languages for applet (' . $applet . ') was unsuccessful ' . $e->getMessage());
         }
 
@@ -103,6 +104,7 @@ class AppletManager {
         try {
             ApiErrors::checkForApiErrorResult($result);
         } catch (\Exception $e) {
+            Logging::printLog(Logging::logType("Error getting language xml for applet. See Exception...", "ERROR"));
             throw new \Exception('Getting language xml for applet: (' . $applet . ') on language: (' . $language . ') was unsuccessful: '
             . $e->getMessage());
         }

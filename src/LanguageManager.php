@@ -26,9 +26,10 @@ class LanguageManager {
         // The applications where we need to translate.
         self::$applications = Config::get('system.translated_applications');
 
-        echo "\nGenerating language files\n";
+        Logging::printLog(Logging::logType("Generating language files....", "INFO"));
         foreach (self::$applications as $application => $languages) {
-            echo "[APPLICATION: " . $application . "]\n";
+
+            Logging::printLog(Logging::logType("[APPLICATION ". $application, "INFO"));
             foreach ($languages as $language) {
                 Logging::printLog(Logging::logType("\t[LANGUAGE: " . $language . "]","INFO"));
                 if (self::getLanguageFile($application, $language)) {
@@ -62,6 +63,7 @@ class LanguageManager {
         try {
             ApiErrors::checkForApiErrorResult($languageResponse);
         } catch (\Exception $e) {
+            Logging::printLog(Logging::logType("Error getting language file. See Exception...", "ERROR"));
             throw new \Exception('Error during getting language file: (' . $application . '/' . $language . ')');
         }
 
